@@ -19,26 +19,34 @@ export default function HomePage() {
     <>
       <Game puzzleNumber={puzzleNumber} mode="daily" />
 
-      <section className="mt-12 max-w-2xl mx-auto space-y-6 text-sm leading-relaxed">
-        <h2 className="text-lg font-bold text-heading">What is Redactle?</h2>
-        <p className="text-body">
-          Redactle is a daily word guessing game where you try to figure out a hidden Wikipedia article. Every word in the article is redacted — replaced by dark blocks — except for common words like &quot;the&quot;, &quot;and&quot;, and &quot;is&quot;. Your goal is to guess words that appear in the article to gradually reveal its content and discover the title.
-        </p>
+      <section className="mt-14 max-w-2xl mx-auto space-y-8 text-sm leading-relaxed">
+        <div>
+          <h2 className="text-lg font-bold text-heading mb-2">The Wikipedia guessing game</h2>
+          <p className="text-body">
+            Redactle gives you a full Wikipedia article with nearly every word blacked out. Common filler words stay visible, but everything else? Gone. Your job is to type guesses one at a time — if a word exists in the article, it gets revealed everywhere it appears. Piece the clues together, figure out what the article is about, and nail the title. Sounds easy until you&apos;re 40 guesses deep staring at a wall of black rectangles.
+          </p>
+        </div>
 
-        <h2 className="text-lg font-bold text-heading">How to play Redactle</h2>
-        <p className="text-body">
-          Type a word and press Enter. If your guess appears in the article, every occurrence gets revealed and highlighted. Pay attention to the structure of the text — headings, paragraph length, and sentence patterns all give clues about the topic. Click any redacted block to see how many letters it contains. The game is won when you correctly guess the key words in the article&apos;s title.
-        </p>
+        <div>
+          <h2 className="text-lg font-bold text-heading mb-2">How it works</h2>
+          <p className="text-body">
+            You start with nothing but sentence structure and a handful of connecting words. Type any English word, hit Enter, and see what lights up. Got three hits on &quot;war&quot;? Probably a history article. Zero hits on &quot;president&quot;? Cross that off. Click any blacked-out word to check its letter count — that alone can crack a tricky title. The game ends when you uncover every important word in the title. Smart matching means guessing &quot;discover&quot; also reveals &quot;discovered&quot; and &quot;discovery&quot;, so you don&apos;t need to brute-force every form.
+          </p>
+        </div>
 
-        <h2 className="text-lg font-bold text-heading">Redactle Unlimited</h2>
-        <p className="text-body">
-          Want to play more than once a day? Redactle unlimited mode lets you play as many games as you want with random Wikipedia articles. Choose a category — science, history, geography, technology, and more — and pick your difficulty level. Each game is a fresh challenge with a new article to uncover.
-        </p>
+        <div>
+          <h2 className="text-lg font-bold text-heading mb-2">Play Redactle unlimited</h2>
+          <p className="text-body">
+            One puzzle a day not enough? Unlimited mode pulls from the same pool of curated Wikipedia articles but lets you play back to back, no waiting. Filter by category if you want — science, history, space, biology, whatever you&apos;re into — or go fully random. Pick easy for household names, hard for deep cuts. There&apos;s no daily limit and no score penalty, so go wild.
+          </p>
+        </div>
 
-        <h2 className="text-lg font-bold text-heading">A new Redactle game every day</h2>
-        <p className="text-body">
-          A brand new Redactle puzzle is available every day at midnight UTC. Come back daily to test your knowledge, build your streak, and share your score with friends. Past puzzles are available in the archive so you never miss one.
-        </p>
+        <div>
+          <h2 className="text-lg font-bold text-heading mb-2">Daily puzzle, midnight reset</h2>
+          <p className="text-body">
+            Every day at midnight UTC a fresh Redactle puzzle goes live. Same article for everyone, so you can compare scores. Solve it, share your guess count, and keep your streak alive. Miss a day? The archive has every past puzzle if you want to catch up or just practice before tomorrow&apos;s drops.
+          </p>
+        </div>
       </section>
     </>
   );
