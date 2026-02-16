@@ -52,7 +52,7 @@ export default function HintPanel({
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-full right-0 mb-2 w-64 card rounded-xl shadow-2xl overflow-hidden z-30 animate-in">
+        <div className="absolute top-full right-0 mt-2 w-64 card rounded-xl shadow-2xl overflow-hidden z-50 animate-in">
           <div className="px-3 py-2.5 border-b border-border">
             <span className="text-xs font-semibold text-heading">Hints</span>
           </div>
