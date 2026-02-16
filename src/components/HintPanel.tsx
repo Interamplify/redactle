@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface Props {
   revealWordHintsLeft: number;
@@ -25,12 +25,41 @@ export default function HintPanel({
   const [topicText, setTopicText] = useState<string | null>(null);
   const [letterText, setLetterText] = useState<string | null>(null);
   const [justRevealed, setJustRevealed] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const total = revealWordHintsLeft + (topicHintUsed ? 0 : 1) + (letterHintUsed ? 0 : 1);
 
+  // Close on outside click
+  useEffect(() => {
+    if (!isOpen) return;
+    const close = (e: MouseEvent) => {
+      if (
+        panelRef.current && !panelRef.current.contains(e.target as Node) &&
+        btnRef.current && !btnRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [isOpen]);
+
+  // Calculate panel position
+  const [pos, setPos] = useState<{ top: number; right: number } | null>(null);
+  useEffect(() => {
+    if (!isOpen || !btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    setPos({
+      top: rect.bottom + 8,
+      right: window.innerWidth - rect.right,
+    });
+  }, [isOpen]);
+
   return (
-    <div className="relative">
+    <>
       <button
+        ref={btnRef}
         onClick={() => setIsOpen(!isOpen)}
         disabled={disabled}
         className={`relative flex items-center justify-center w-7 h-7 rounded-lg transition-all shrink-0 ${
@@ -51,8 +80,12 @@ export default function HintPanel({
         )}
       </button>
 
-      {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-64 card rounded-xl shadow-2xl overflow-hidden z-50 animate-in">
+      {isOpen && pos && (
+        <div
+          ref={panelRef}
+          className="fixed w-64 card rounded-xl shadow-2xl overflow-hidden z-50 animate-in"
+          style={{ top: pos.top, right: pos.right }}
+        >
           <div className="px-3 py-2.5 border-b border-border">
             <span className="text-xs font-semibold text-heading">Hints</span>
           </div>
@@ -88,7 +121,7 @@ export default function HintPanel({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
