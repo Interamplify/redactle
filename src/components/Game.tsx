@@ -224,9 +224,13 @@ export default function Game({
             </a>
           )}
 
-          <span className="text-accent font-bold text-lg tabular-nums">
-            {mode === "daily" ? `#${pNum}` : "Free Play"}
-          </span>
+          {mode === "daily" ? (
+            <a href="/archive" className="text-accent hover:text-accent-hover font-bold text-lg tabular-nums transition-colors" title="Browse archive">
+              #{pNum}
+            </a>
+          ) : (
+            <span className="text-accent font-bold text-lg tabular-nums">Free Play</span>
+          )}
 
           {mode === "daily" && pNum < currentMaxPuzzle && (
             <a
