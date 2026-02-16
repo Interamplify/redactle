@@ -203,8 +203,8 @@ export default function Game({
   const sidebarContent = (
     <>
       {/* Guess input + hints */}
-      <div className="flex gap-2 items-end">
-        <div className="flex-1">
+      <div className="flex gap-2 items-stretch">
+        <div className="flex-1 min-w-0">
           <GuessInput onGuess={handleGuess} disabled={gameFinished} />
         </div>
         <HintPanel

@@ -33,7 +33,7 @@ export default function HintPanel({
       <button
         onClick={() => setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`relative flex items-center justify-center w-[44px] h-[44px] rounded-xl border transition-all ${
+        className={`relative flex items-center justify-center w-[44px] rounded-xl border transition-all shrink-0 ${
           isOpen
             ? "bg-accent-soft border-accent/30 text-accent"
             : "bg-bg-elevated border-border text-muted hover:text-accent hover:border-accent/25"
