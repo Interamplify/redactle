@@ -92,6 +92,10 @@
 
 html { scroll-behavior: smooth; }
 
+a, button, [role="button"], input[type="submit"], input[type="button"], select, summary {
+  cursor: pointer;
+}
+
 *:focus-visible {
   outline: 2px solid var(--c-accent);
   outline-offset: 2px;
