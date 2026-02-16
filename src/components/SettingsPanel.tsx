@@ -9,6 +9,7 @@ interface Props {
 }
 
 const themes: { value: Theme; label: string; icon: string }[] = [
+  { value: "auto", label: "Auto", icon: "💻" },
   { value: "dark", label: "Dark", icon: "🌙" },
   { value: "light", label: "Light", icon: "☀️" },
 ];
@@ -53,7 +54,7 @@ export default function SettingsPanel({ isOpen, onClose }: Props) {
           <label className="text-[11px] font-semibold text-muted uppercase tracking-wider mb-2 block">
             Theme
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {themes.map((t) => (
               <button
                 key={t.value}

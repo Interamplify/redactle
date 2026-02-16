@@ -1,4 +1,4 @@
-export type Theme = "dark" | "light";
+export type Theme = "auto" | "dark" | "light";
 export type FontSize = "small" | "medium" | "large";
 
 export interface Settings {
@@ -11,7 +11,7 @@ export interface Settings {
 const STORAGE_KEY = "redactle-settings";
 
 const DEFAULTS: Settings = {
-  theme: "dark",
+  theme: "auto",
   fontSize: "medium",
   showLetterCount: true,
   autoScroll: true,
@@ -31,6 +31,13 @@ export function getSettings(): Settings {
 export function saveSettings(settings: Settings) {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+}
+
+/** Resolve "auto" to actual dark/light based on system preference */
+export function resolveTheme(theme: Theme): "dark" | "light" {
+  if (theme !== "auto") return theme;
+  if (typeof window === "undefined") return "dark";
+  return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
 }
 
 export const FONT_SIZES: Record<FontSize, string> = {

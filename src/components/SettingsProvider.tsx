@@ -13,10 +13,12 @@ import {
   FontSize,
   getSettings,
   saveSettings,
+  resolveTheme,
   FONT_SIZES,
 } from "@/lib/settings";
 
 interface SettingsCtx extends Settings {
+  resolvedTheme: "dark" | "light";
   setTheme: (t: Theme) => void;
   setFontSize: (f: FontSize) => void;
   toggleLetterCount: () => void;
@@ -34,26 +36,38 @@ export function useSettings() {
 export default function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<Settings>(getSettings);
   const [mounted, setMounted] = useState(false);
+  const [systemDark, setSystemDark] = useState(true);
 
   useEffect(() => {
     setSettings(getSettings());
     setMounted(true);
+
+    // Listen for system color scheme changes
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    setSystemDark(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setSystemDark(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
   }, []);
+
+  const resolvedTheme: "dark" | "light" =
+    settings.theme === "auto" ? (systemDark ? "dark" : "light") : settings.theme;
 
   useEffect(() => {
     if (!mounted) return;
     saveSettings(settings);
 
-    // Apply theme class
+    // Apply resolved theme
     const root = document.documentElement;
-    root.setAttribute("data-theme", settings.theme);
+    root.setAttribute("data-theme", resolvedTheme);
 
     // Apply font size
     root.style.setProperty("--article-font-size", FONT_SIZES[settings.fontSize]);
-  }, [settings, mounted]);
+  }, [settings, mounted, resolvedTheme]);
 
   const ctx: SettingsCtx = {
     ...settings,
+    resolvedTheme,
     setTheme: (theme) => setSettings((s) => ({ ...s, theme })),
     setFontSize: (fontSize) => setSettings((s) => ({ ...s, fontSize })),
     toggleLetterCount: () =>

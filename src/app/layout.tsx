@@ -45,11 +45,11 @@ export default function RootLayout({
       >
         <SettingsProvider>
           <HeaderNav />
-          <main className="max-w-3xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
+          <main className="max-w-3xl lg:max-w-6xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
             {children}
           </main>
           <footer className="border-t border-border mt-16">
-            <div className="max-w-3xl mx-auto px-4 py-5 text-center text-xs text-muted">
+            <div className="max-w-3xl lg:max-w-6xl mx-auto px-4 py-5 text-center text-xs text-muted">
               Articles from{" "}
               <a
                 href="https://en.wikipedia.org"

@@ -24,7 +24,7 @@ export default function HeaderNav() {
   return (
     <>
       <header className="border-b border-border sticky top-0 bg-bg/95 backdrop-blur-xl z-40 transition-colors duration-300">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 h-12 flex items-center justify-between">
+        <div className="max-w-3xl lg:max-w-6xl mx-auto px-4 sm:px-6 h-12 flex items-center justify-between">
           {/* Logo - this is the h1 of every page */}
           <a href="/" className="shrink-0">
             <h1 className="text-lg font-bold tracking-tight m-0">
@@ -34,7 +34,7 @@ export default function HeaderNav() {
           </a>
 
           {/* Desktop nav */}
-          <nav className="hidden sm:flex items-center gap-0.5 text-[13px]">
+          <nav className="hidden sm:flex items-center gap-1 text-sm">
             <a href="/" className="nav-link">Daily</a>
             <a href="/play" className="nav-link">New Game</a>
             <a href="/archive" className="nav-link">Archive</a>

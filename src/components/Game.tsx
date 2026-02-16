@@ -43,6 +43,7 @@ export default function Game({
 }: Props) {
   const [article, setArticle] = useState<ArticleData | null>(null);
   const [tokens, setTokens] = useState<WordToken[]>([]);
+  const [titleTokens, setTitleTokens] = useState<WordToken[]>([]);
   const [guesses, setGuesses] = useState<Guess[]>([]);
   const [won, setWon] = useState(false);
   const [showWinModal, setShowWinModal] = useState(false);
@@ -78,6 +79,7 @@ export default function Game({
       const data: ArticleData = await res.json();
       setArticle(data);
       setTokens(tokenizeText(data.content));
+      setTitleTokens(tokenizeText(data.title));
       setGuesses([]);
       setWon(false);
       setShowWinModal(false);
@@ -104,11 +106,14 @@ export default function Game({
     if (COMMON_WORDS.has(normalized)) return;
 
     const guessIndex = guesses.length + 1;
-    const { tokens: newTokens, hits } = processGuess(tokens, word, guessIndex);
+    const { tokens: newTokens, hits: bodyHits } = processGuess(tokens, word, guessIndex);
+    const { tokens: newTitleTokens, hits: titleHits } = processGuess(titleTokens, word, guessIndex);
     setTokens(newTokens);
+    setTitleTokens(newTitleTokens);
     setLastGuessIndex(guessIndex);
 
-    const newGuess: Guess = { word: normalized, hits, index: guessIndex };
+    const totalHits = bodyHits + titleHits;
+    const newGuess: Guess = { word: normalized, hits: totalHits, index: guessIndex };
     const newGuesses = [...guesses, newGuess];
     setGuesses(newGuesses);
 
@@ -118,6 +123,7 @@ export default function Game({
       const s = recordWin(newGuesses.length);
       setStreak(s.current);
       setTokens(newTokens.map((t) => ({ ...t, revealed: true })));
+      setTitleTokens(newTitleTokens.map((t) => ({ ...t, revealed: true })));
     }
   };
 
@@ -127,6 +133,7 @@ export default function Game({
     const s = recordLoss();
     setStreak(s.current);
     setTokens((prev) => prev.map((t) => ({ ...t, revealed: true })));
+    setTitleTokens((prev) => prev.map((t) => ({ ...t, revealed: true })));
   };
 
   const handleRevealWord = () => {
@@ -137,10 +144,12 @@ export default function Game({
     if (unrevealed.length === 0) return;
     const pick = unrevealed[Math.floor(Math.random() * unrevealed.length)];
     const guessIndex = guesses.length + 1;
-    const { tokens: newTokens, hits } = processGuess(tokens, pick.token.text, guessIndex);
+    const { tokens: newTokens, hits: bodyHits } = processGuess(tokens, pick.token.text, guessIndex);
+    const { tokens: newTitleTokens, hits: titleHits } = processGuess(titleTokens, pick.token.text, guessIndex);
     setTokens(newTokens);
+    setTitleTokens(newTitleTokens);
     setLastGuessIndex(guessIndex);
-    setGuesses((prev) => [...prev, { word: `${pick.token.normalized} (hint)`, hits, index: guessIndex }]);
+    setGuesses((prev) => [...prev, { word: `${pick.token.normalized} (hint)`, hits: bodyHits + titleHits, index: guessIndex }]);
     setRevealWordHints((h) => h - 1);
   };
 
@@ -190,8 +199,32 @@ export default function Game({
   const pNum = article?.puzzleNumber || puzzleNumber || 0;
   const canGoPrev = mode === "daily" && pNum > 1;
 
+  /* Shared sidebar content: input + hints + guess list */
+  const sidebarContent = (
+    <>
+      {/* Guess input + hints */}
+      <div className="flex gap-2 items-end">
+        <div className="flex-1">
+          <GuessInput onGuess={handleGuess} disabled={gameFinished} />
+        </div>
+        <HintPanel
+          revealWordHintsLeft={revealWordHints}
+          topicHintUsed={topicHintUsed}
+          letterHintUsed={letterHintUsed}
+          onRevealWord={handleRevealWord}
+          onTopicHint={handleTopicHint}
+          onLetterHint={handleLetterHint}
+          disabled={gameFinished}
+        />
+      </div>
+
+      {/* Guess list */}
+      <GuessList guesses={guesses} />
+    </>
+  );
+
   return (
-    <div className="max-w-3xl mx-auto">
+    <>
       {/* Puzzle header: number + prev button + subtitle */}
       <div className="mb-4">
         <div className="flex items-center justify-center gap-2 mb-0.5">
@@ -296,31 +329,30 @@ export default function Game({
         </div>
       )}
 
-      {/* Article */}
-      <div className="card rounded-xl p-4 sm:p-5 mb-4 max-h-[55vh] overflow-y-auto custom-scrollbar">
-        <RedactedArticle tokens={tokens} lastGuessIndex={lastGuessIndex} />
-      </div>
-
-      {/* Guess input + hints */}
-      <div className="sticky bottom-0 bg-bg/90 backdrop-blur-xl pt-3 pb-2 z-20">
-        <div className="flex gap-2 items-end">
-          <div className="flex-1">
-            <GuessInput onGuess={handleGuess} disabled={gameFinished} />
+      {/* === Two-column layout on lg+ === */}
+      <div className="lg:flex lg:gap-5">
+        {/* Left: Article */}
+        <div className="lg:flex-1 lg:min-w-0">
+          <div className="card rounded-xl p-4 sm:p-5 mb-4 lg:mb-0 max-h-[55vh] lg:max-h-[72vh] overflow-y-auto custom-scrollbar">
+            <RedactedArticle tokens={tokens} titleTokens={titleTokens} lastGuessIndex={lastGuessIndex} />
           </div>
-          <HintPanel
-            revealWordHintsLeft={revealWordHints}
-            topicHintUsed={topicHintUsed}
-            letterHintUsed={letterHintUsed}
-            onRevealWord={handleRevealWord}
-            onTopicHint={handleTopicHint}
-            onLetterHint={handleLetterHint}
-            disabled={gameFinished}
-          />
+        </div>
+
+        {/* Right: Sidebar (input + guesses) - sticky on desktop */}
+        <div className="lg:w-80 lg:shrink-0">
+          {/* Mobile: sticky bottom bar */}
+          <div className="lg:hidden sticky bottom-0 bg-bg/90 backdrop-blur-xl pt-3 pb-2 z-20">
+            {sidebarContent}
+          </div>
+
+          {/* Desktop: sticky sidebar */}
+          <div className="hidden lg:block lg:sticky lg:top-20">
+            <div className="space-y-3">
+              {sidebarContent}
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Guess list */}
-      <GuessList guesses={guesses} />
 
       {/* Win */}
       {showWinModal && article && (
@@ -337,6 +369,6 @@ export default function Game({
           onClose={() => setShowWinModal(false)}
         />
       )}
-    </div>
+    </>
   );
 }
