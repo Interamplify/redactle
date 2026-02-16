@@ -38,7 +38,6 @@ export default function HeaderNav() {
             <a href="/" className="nav-link">Daily</a>
             <a href="/play" className="nav-link">New Game</a>
             <a href="/archive" className="nav-link">Archive</a>
-            <a href="/how-to-play" className="nav-link">Help</a>
 
             <div className="w-px h-4 bg-border mx-1" />
 
@@ -94,7 +93,6 @@ export default function HeaderNav() {
               { href: "/", label: "Daily Puzzle" },
               { href: "/play", label: "New Game" },
               { href: "/archive", label: "Archive" },
-              { href: "/how-to-play", label: "How to Play" },
             ].map((link) => (
               <a
                 key={link.href}
