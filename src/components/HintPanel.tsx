@@ -33,19 +33,19 @@ export default function HintPanel({
       <button
         onClick={() => setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`relative flex items-center justify-center w-[44px] rounded-xl border transition-all shrink-0 ${
+        className={`relative flex items-center justify-center w-7 h-7 rounded-lg transition-all shrink-0 ${
           isOpen
-            ? "bg-accent-soft border-accent/30 text-accent"
-            : "bg-bg-elevated border-border text-muted hover:text-accent hover:border-accent/25"
+            ? "text-accent"
+            : "text-muted hover:text-accent"
         } disabled:opacity-30 disabled:cursor-not-allowed`}
         title="Hints"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M9 18h6"/><path d="M10 22h4"/>
           <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5C8.35 12.26 8.82 13.02 9 14"/>
         </svg>
         {total > 0 && !disabled && (
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-accent-fg text-[9px] font-bold rounded-full flex items-center justify-center">
+          <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-accent text-accent-fg text-[8px] font-bold rounded-full flex items-center justify-center">
             {total}
           </span>
         )}

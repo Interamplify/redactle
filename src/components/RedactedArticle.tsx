@@ -93,7 +93,7 @@ export default function RedactedArticle({ tokens, titleTokens, lastGuessIndex }:
   return (
     <div style={{ fontSize: "var(--article-font-size)" }}>
       {/* Title - big redacted heading */}
-      {titleTokens && titleTokens.length > 0 && (
+      {titleTokens && titleTokens.some(t => t.isWord) && (
         <h2 className="text-[1.6em] font-bold leading-[2] mb-4 pb-3 border-b border-border">
           {titleTokens.map((token, i) => renderToken(token, `title-${i}`, true))}
         </h2>

@@ -23,7 +23,7 @@ export default function GuessInput({ onGuess, disabled }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 h-full">
+    <form onSubmit={handleSubmit} className="flex gap-2">
       <input
         ref={inputRef}
         type="text"

@@ -199,26 +199,10 @@ export default function Game({
   const pNum = article?.puzzleNumber || puzzleNumber || 0;
   const canGoPrev = mode === "daily" && pNum > 1;
 
-  /* Shared sidebar content: input + hints + guess list */
+  /* Shared sidebar content: input + guess list */
   const sidebarContent = (
     <>
-      {/* Guess input + hints */}
-      <div className="flex gap-2 items-stretch">
-        <div className="flex-1 min-w-0">
-          <GuessInput onGuess={handleGuess} disabled={gameFinished} />
-        </div>
-        <HintPanel
-          revealWordHintsLeft={revealWordHints}
-          topicHintUsed={topicHintUsed}
-          letterHintUsed={letterHintUsed}
-          onRevealWord={handleRevealWord}
-          onTopicHint={handleTopicHint}
-          onLetterHint={handleLetterHint}
-          disabled={gameFinished}
-        />
-      </div>
-
-      {/* Guess list */}
+      <GuessInput onGuess={handleGuess} disabled={gameFinished} />
       <GuessList guesses={guesses} />
     </>
   );
@@ -292,6 +276,15 @@ export default function Game({
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <span className="text-faint tabular-nums">{revealedWords}/{totalWords}</span>
+          <HintPanel
+            revealWordHintsLeft={revealWordHints}
+            topicHintUsed={topicHintUsed}
+            letterHintUsed={letterHintUsed}
+            onRevealWord={handleRevealWord}
+            onTopicHint={handleTopicHint}
+            onLetterHint={handleLetterHint}
+            disabled={gameFinished}
+          />
           {!gameFinished && (
             <button onClick={handleGiveUp} className="text-muted hover:text-danger transition-colors">
               Give up
