@@ -1,18 +1,9 @@
 import { MetadataRoute } from "next";
-import { getPuzzleNumber } from "@/lib/articles";
 
 export const dynamic = "force-dynamic";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const currentPuzzle = getPuzzleNumber();
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://redactle.example.com";
-
-  const puzzlePages = Array.from({ length: currentPuzzle }, (_, i) => ({
-    url: `${baseUrl}/${i + 1}`,
-    lastModified: new Date(),
-    changeFrequency: "never" as const,
-    priority: 0.6,
-  }));
 
   return [
     {
@@ -20,6 +11,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
+    },
+    {
+      url: `${baseUrl}/play`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/archive`,
@@ -31,8 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/how-to-play`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.7,
     },
-    ...puzzlePages,
   ];
 }

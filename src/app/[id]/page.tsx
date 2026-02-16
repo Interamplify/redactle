@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `Redactle #${puzzleNumber} - Wikipedia Guessing Puzzle`,
     description: `Play Redactle puzzle #${puzzleNumber}. Guess the hidden Wikipedia article!`,
+    robots: { index: false, follow: true },
   };
 }
 
