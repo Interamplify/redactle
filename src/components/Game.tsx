@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   WordToken,
   Guess,
@@ -241,13 +241,7 @@ export default function Game({
           )}
         </div>
 
-        <p className="text-muted text-xs text-center">
-          {mode === "daily" && pNum === currentMaxPuzzle && "Today's puzzle"}
-          {mode === "daily" && pNum < currentMaxPuzzle && (
-            <>Past puzzle · <a href="/" className="text-accent hover:underline">play today&apos;s</a></>
-          )}
-          {mode === "random" && "Unlimited mode"}
-        </p>
+        <PuzzleSubtitle mode={mode} puzzleNumber={pNum} currentMaxPuzzle={currentMaxPuzzle} />
       </div>
 
       {/* Collapsible intro */}
@@ -363,5 +357,66 @@ export default function Game({
         />
       )}
     </>
+  );
+}
+
+/* ── Puzzle subtitle with date + info tooltip ── */
+
+function formatDate(puzzleNumber: number): string {
+  const start = new Date("2025-01-01T00:00:00Z");
+  const date = new Date(start.getTime() + (puzzleNumber - 1) * 86400000);
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function PuzzleSubtitle({ mode, puzzleNumber, currentMaxPuzzle }: { mode: string; puzzleNumber: number; currentMaxPuzzle: number }) {
+  const [showInfo, setShowInfo] = useState(false);
+  const infoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showInfo) return;
+    const close = (e: MouseEvent) => {
+      if (infoRef.current && !infoRef.current.contains(e.target as Node)) setShowInfo(false);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [showInfo]);
+
+  const isToday = mode === "daily" && puzzleNumber === currentMaxPuzzle;
+  const isPast = mode === "daily" && puzzleNumber < currentMaxPuzzle;
+  const dateStr = mode === "daily" ? formatDate(puzzleNumber) : null;
+
+  return (
+    <div className="flex items-center justify-center gap-1.5 text-muted text-xs">
+      {isToday && (
+        <>
+          <span>Today&apos;s puzzle · {dateStr}</span>
+          <div className="relative" ref={infoRef}>
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="text-muted hover:text-body transition-colors"
+              aria-label="Puzzle schedule info"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+              </svg>
+            </button>
+            {showInfo && (
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 card rounded-lg p-3 shadow-xl z-30 animate-in text-left">
+                <p className="text-body text-[11px] leading-relaxed">
+                  A new puzzle is available every day at <span className="text-heading font-medium">midnight UTC</span>. Come back tomorrow for a new challenge!
+                </p>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+      {isPast && (
+        <>
+          <span>Past puzzle · {dateStr} · </span>
+          <a href="/" className="text-accent hover:underline">play today&apos;s</a>
+        </>
+      )}
+      {mode === "random" && <span>Unlimited mode</span>}
+    </div>
   );
 }
