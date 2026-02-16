@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 interface Props {
   title: string;
   guessCount: number;
@@ -19,13 +21,41 @@ export default function WinModal({
   onNewGame,
   onClose,
 }: Props) {
+  const [copied, setCopied] = useState(false);
+
   const shareText = isRandom
     ? `Redactle Free Play — "${title}" in ${guessCount} guesses${streak > 1 ? ` 🔥${streak}` : ""}`
     : `Redactle #${puzzleNumber} — ${guessCount} guesses${streak > 1 ? ` 🔥${streak}` : ""}`;
 
-  const handleShare = () => {
-    if (navigator.share) navigator.share({ text: shareText });
-    else navigator.clipboard.writeText(shareText);
+  const handleShare = async () => {
+    // Try native share first (mobile)
+    if (navigator.share) {
+      try {
+        await navigator.share({ text: shareText });
+        return;
+      } catch {
+        // User cancelled or share failed, fall through to clipboard
+      }
+    }
+
+    // Clipboard fallback
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Final fallback: textarea trick for older browsers / HTTP
+      const textarea = document.createElement("textarea");
+      textarea.value = shareText;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (
@@ -64,7 +94,7 @@ export default function WinModal({
             onClick={handleShare}
             className="flex-1 bg-accent hover:bg-accent-hover text-accent-fg font-semibold py-2.5 rounded-xl transition-all active:scale-[0.97] text-sm"
           >
-            Share
+            {copied ? "Copied!" : "Share"}
           </button>
           <button
             onClick={onNewGame}
